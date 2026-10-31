@@ -135,6 +135,26 @@
       border-color: #cbd5e1;
     }
 
+    .btn-timer {
+      background: #ffffff;
+      color: #4f46e5;
+      border: 1.5px solid #c7d2fe;
+      box-shadow: 0 1px 3px rgba(79, 70, 229, 0.08);
+      font-weight: 700;
+    }
+
+    .btn-timer:hover {
+      background: #eef2ff;
+      border-color: #818cf8;
+      color: #3730a3;
+    }
+
+    .btn-timer.active {
+      background: #4f46e5;
+      color: #ffffff;
+      border-color: #4f46e5;
+    }
+
     .btn-primary {
       background: linear-gradient(135deg, #4f46e5, #4338ca);
       color: #ffffff;
@@ -598,15 +618,23 @@
     }
 
     .timer-display {
-      font-size: 88px;
+      font-size: 104px;
       font-weight: 900;
       font-family: ui-monospace, SFMono-Regular, "Roboto Mono", Menlo, Consolas, monospace;
       color: #38bdf8;
-      letter-spacing: 4px;
-      text-shadow: 0 0 25px rgba(56, 189, 248, 0.35);
+      letter-spacing: 6px;
+      text-shadow: 0 0 30px rgba(56, 189, 248, 0.45);
       line-height: 1;
       user-select: none;
       transition: color 0.3s;
+      margin: 8px 0;
+    }
+
+    @media (max-width: 640px) {
+      .timer-display {
+        font-size: 64px;
+        letter-spacing: 3px;
+      }
     }
 
     .timer-display.warning {
@@ -674,11 +702,12 @@
     }
 
     :fullscreen .timer-card {
-      padding: 36px 48px;
+      padding: 40px 56px;
     }
 
     :fullscreen .timer-display {
-      font-size: 120px;
+      font-size: 144px;
+      letter-spacing: 8px;
     }
 
     /* 인쇄 최적화 */
@@ -795,7 +824,7 @@
         <span id="resultCountBadge" class="summary-badge" style="display:none;"></span>
       </div>
       <div class="result-actions">
-        <button id="timerToggleBtn" class="btn btn-outline" style="display:none;" title="5분 활동 타이머">
+        <button id="timerToggleBtn" class="btn btn-timer" title="5분 활동 타이머 열기/닫기">
           ⏱️ 5분 타이머
         </button>
         <button id="copyBtn" class="btn btn-outline" style="display:none;">
@@ -1276,8 +1305,10 @@
 
   function openTimer() {
     timerCard.style.display = 'flex';
+    timerToggleBtn.classList.add('active');
+    timerToggleBtn.textContent = '⏱️ 타이머 닫기';
     resetTimer(true);
-    timerCard.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+    timerCard.scrollIntoView({ behavior: 'smooth', block: 'center' });
     showToast('⏱️ 5분 활동 타이머가 시작되었습니다.');
   }
 
@@ -1285,6 +1316,16 @@
     clearInterval(timerInterval);
     isTimerRunning = false;
     timerCard.style.display = 'none';
+    timerToggleBtn.classList.remove('active');
+    timerToggleBtn.textContent = '⏱️ 5분 타이머';
+  }
+
+  function toggleTimer() {
+    if (timerCard.style.display === 'none' || !timerCard.style.display) {
+      openTimer();
+    } else {
+      closeTimer();
+    }
   }
 
   function playTimerBeep() {
@@ -1327,7 +1368,7 @@
       divideBtn.textContent = '🎲 모둠 나누기';
       reshuffleBtn.style.display = 'none';
       copyBtn.style.display = 'none';
-      timerToggleBtn.style.display = 'none';
+      timerToggleBtn.style.display = 'inline-flex';
       resultCountBadge.style.display = 'none';
 
       groupsGrid.innerHTML = `
@@ -1371,7 +1412,7 @@
   divideBtn.addEventListener('click', performDivide);
   reshuffleBtn.addEventListener('click', performDivide);
   copyBtn.addEventListener('click', copyResults);
-  timerToggleBtn.addEventListener('click', openTimer);
+  timerToggleBtn.addEventListener('click', toggleTimer);
   timerStartPauseBtn.addEventListener('click', toggleTimerStartPause);
   timerResetBtn.addEventListener('click', () => resetTimer(true));
   timerCloseBtn.addEventListener('click', closeTimer);
