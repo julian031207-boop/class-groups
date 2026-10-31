@@ -88,6 +88,16 @@
       letter-spacing: -0.5px;
     }
 
+    .today-date {
+      font-size: 13px;
+      font-weight: 600;
+      color: #6366f1;
+      margin-top: 2px;
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+
     .subtitle {
       font-size: 13px;
       color: var(--text-muted);
@@ -697,6 +707,7 @@
       <div class="logo-badge">🎯</div>
       <div>
         <h1>수업용 모둠 나누기</h1>
+        <div class="today-date" id="todayDate"></div>
         <div class="subtitle">출석번호 무작위 자동 편성</div>
       </div>
     </div>
@@ -1376,7 +1387,22 @@
     }
   });
 
+  // 오늘 날짜 표시
+  function updateTodayDate() {
+    const today = new Date();
+    const days = ['일', '월', '화', '수', '목', '금', '토'];
+    const year = today.getFullYear();
+    const month = today.getMonth() + 1;
+    const date = today.getDate();
+    const day = days[today.getDay()];
+    const el = document.getElementById('todayDate');
+    if (el) {
+      el.textContent = `📅 ${year}년 ${month}월 ${date}일 (${day})`;
+    }
+  }
+
   // 초기 실행
+  updateTodayDate();
   loadSettings();
   renderChips();
   updateSummary();
